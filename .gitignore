@@ -1,0 +1,40 @@
+# === Global Python ===
+*.py[cod]
+__pycache__/
+*.so
+*.egg
+*.egg-info/
+*.log
+*.db
+output/
+*.pid
+*.sock
+
+# === Backend ===
+backend/venv/
+backend/output/
+backend/__pycache__/
+backend/*.log
+
+# === Frontend ===
+frontend/node_modules/
+frontend/dist/
+frontend/.vitepress/
+frontend/*.log
+
+# === Environment & System ===
+.env
+.env.*
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.bak
+*.tmp
+~$*
+
+# === Output Files ===
+*.docx
+*.pdf
+
