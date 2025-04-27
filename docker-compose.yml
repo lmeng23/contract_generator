@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  contract-backend:
+    image: contract-backend
+    container_name: contract-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app/templates/template.docx:/app/app/templates/template.docx
+      - ./backend/output:/app/output
+    restart: always  # 设置重启策略为 always
+
+  contract-frontend:
+    image: contract-frontend:latest
+    container_name: contract-frontend
+    ports:
+      - "1234:80"
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html
+    restart: always  # 设置重启策略为 always
+
+  contract_mysql:
+    image: mysql:8.0
+    container_name: contract_mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_DATABASE=
+    ports:
+      - "3307:3306"
+    restart: always  # 设置重启策略为 always
+

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from app.api import contract
+from app.api import contract, company
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import OUTPUT_DIR
@@ -19,6 +19,12 @@ app.include_router(
     contract.router,
     prefix="/api/contract",
     tags=["contract"]
+)
+
+app.include_router(
+    company.router,
+    prefix="/api/company",
+    tags=["company"]
 )
 
 app.mount("/static", StaticFiles(directory=OUTPUT_DIR), name="static")

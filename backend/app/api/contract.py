@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.core.contract_renderer import ContractRenderer
-from app.schemas import ContractData
+from app.schemas.contract import ContractData
 
 router = APIRouter()
 
