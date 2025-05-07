@@ -7,19 +7,20 @@
 
       <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px" class="contract-form">
         <el-form-item label="合同编号:" prop="contractNumber">
-          <el-input v-model="formData.contractNumber" placeholder="数字编号" />
+          <el-input v-model="formData.contractNumber" />
         </el-form-item>
 
         <el-form-item label="签订日期:" prop="signingDate">
-          <el-input v-model="formData.signingDate" placeholder="格式: YYYY-MM-DD" />
+          <el-date-picker v-model="formData.signingDate" type="date" placeholder="选择日期" format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD" style="width: 100%;" />
         </el-form-item>
+
 
         <el-form-item label="公司名称:" prop="companyName">
-          <el-autocomplete v-model="formData.companyName" :fetch-suggestions="fetchSuggestions" placeholder="请输入公司名称"
-            :trigger-on-focus="false" @select="handleSelectCompany" value-key="name" />
+          <el-autocomplete v-model="formData.companyName" :fetch-suggestions="fetchSuggestions"
+            placeholder="输入公司名称，自动补全相关信息 " :trigger-on-focus="true" @select="handleSelectCompany" value-key="name"
+            clearable />
         </el-form-item>
-
-
 
         <el-form-item label="商品吨位:" prop="productTonnage">
           <el-input v-model="formData.productTonnage" />
@@ -95,16 +96,6 @@ const formRef = ref(null)
 
 const selectedCompanyId = ref(null) // 选中的公司ID
 
-// 自定义验证器 - 日期格式
-const validateDate = (rule, value, callback) => {
-  const dateRegex = /^\d{4}-\d{1,2}-\d{1,2}$/;
-  if (!dateRegex.test(value)) {
-    callback(new Error('日期格式必须为YYYY-MM-DD'))
-    return
-  }
-  callback()
-}
-
 // 验证规则
 const rules = reactive({
   contractNumber: [
@@ -113,7 +104,6 @@ const rules = reactive({
   ],
   signingDate: [
     { required: true, message: '请输入签订日期', trigger: 'blur' },
-    { validator: validateDate, trigger: 'blur' }
   ],
   companyName: [
     { required: true, message: '请输入公司名称', trigger: 'blur' }
@@ -137,10 +127,6 @@ const rules = reactive({
   ]
 })
 
-/**
- * fetchSuggestions: 自动补全的方法
- * 这里不需要 watch 了，直接根据 queryString 去请求后台
- */
 const fetchSuggestions = async (queryString, cb) => {
   if (!queryString.trim()) {
     cb([])
