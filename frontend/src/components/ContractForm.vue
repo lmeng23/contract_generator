@@ -18,7 +18,7 @@
 
         <el-form-item label="公司名称:" prop="companyName">
           <el-autocomplete v-model="formData.companyName" :fetch-suggestions="fetchSuggestions"
-            placeholder="输入公司名称，自动补全相关信息 " :trigger-on-focus="true" @select="handleSelectCompany" value-key="name"
+            placeholder="输入公司名称，自动补全相关信息 " :trigger-on-focus="false" @select="handleSelectCompany" value-key="name"
             clearable />
         </el-form-item>
 
