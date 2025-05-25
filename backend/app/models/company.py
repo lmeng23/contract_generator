@@ -15,7 +15,7 @@ class Company(Base):
     bank_account = Column(String(100))
     bank_address = Column(String(255))
     created_at = Column(DateTime(timezone=True),
-                        server_default=func.now().op('AT TIME ZONE')('Asia/Shanghai'))
+                        server_default=func.now())
     updated_at = Column(DateTime(timezone=True),
-                        onupdate=func.now().op('AT TIME ZONE')('Asia/Shanghai'),
-                        server_default=func.now().op('AT TIME ZONE')('Asia/Shanghai'))
+                        onupdate=func.now(),
+                        server_default=func.now())
