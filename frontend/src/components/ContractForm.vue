@@ -62,6 +62,14 @@
           <el-input v-model="formData.bankAccount" />
         </el-form-item>
 
+        <el-form-item label="运输方式:" prop="deliveryMethod">
+          <el-select v-model="formData.deliveryMethod" placeholder="请选择运输方式" style="width: 100%;">
+            <el-option label="双方协商" value="双方协商" />
+            <el-option label="由甲方到乙方仓库自提货" value="由甲方到乙方仓库自提货" />
+          </el-select>
+        </el-form-item>
+
+
         <el-form-item class="submit-container">
           <el-button type="primary" class="submit-button" @click="submitForm">提交</el-button>
         </el-form-item>
@@ -89,7 +97,8 @@ const formData = reactive({
   authorizedAgent: '',
   taxId: '',
   bankAddress: '',
-  bankAccount: ''
+  bankAccount: '',
+  deliveryMethod: '双方协商',
 })
 
 const formRef = ref(null)
@@ -124,7 +133,10 @@ const rules = reactive({
   ],
   bankAccount: [
     { required: true, message: '请输入银行账号', trigger: 'blur' }
-  ]
+  ],
+  deliveryMethod: [
+    { required: true, message: '请选择运输方式', trigger: 'change' }
+  ],
 })
 
 const fetchSuggestions = async (queryString, cb) => {

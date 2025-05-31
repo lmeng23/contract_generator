@@ -15,3 +15,4 @@ class ContractData(BaseModel):
     taxId: str
     bankAddress: str
     bankAccount: str
+    deliveryMethod: str

@@ -40,6 +40,8 @@ class ContractRenderer:
             "identification_number": data[10],
             "opening_bank": data[11],
             "account": data[12],
+
+            "pattern": data[13]
         }
 
     def format_number(self, money: int | float) -> str:
