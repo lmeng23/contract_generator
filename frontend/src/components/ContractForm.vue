@@ -1,10 +1,6 @@
 <template>
   <div class="contract-form-container">
     <el-card class="form-card">
-      <div class="card-header">
-        <h2>合同生成器</h2>
-      </div>
-
       <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px" class="contract-form">
         <el-form-item label="合同编号:" prop="contractNumber">
           <el-input v-model="formData.contractNumber" />
@@ -13,13 +9,6 @@
         <el-form-item label="签订日期:" prop="signingDate">
           <el-date-picker v-model="formData.signingDate" type="date" placeholder="选择日期" format="YYYY-MM-DD"
             value-format="YYYY-MM-DD" style="width: 100%;" />
-        </el-form-item>
-
-
-        <el-form-item label="公司名称:" prop="companyName">
-          <el-autocomplete v-model="formData.companyName" :fetch-suggestions="fetchSuggestions"
-            placeholder="输入公司名称，自动补全相关信息 " :trigger-on-focus="false" @select="handleSelectCompany" value-key="name"
-            clearable />
         </el-form-item>
 
         <el-form-item label="商品吨位:" prop="productTonnage">
@@ -34,6 +23,12 @@
           <el-input v-model="formData.specialPrice" placeholder="不优惠留空" />
         </el-form-item>
 
+        <el-form-item label="公司名称:" prop="companyName">
+          <el-autocomplete v-model="formData.companyName" :fetch-suggestions="fetchSuggestions"
+            placeholder="输入公司名称，自动补全相关信息 " :trigger-on-focus="false" @select="handleSelectCompany" value-key="name"
+            clearable />
+        </el-form-item>
+
         <el-form-item label="电话号码:" prop="phoneNumber">
           <el-input v-model="formData.phoneNumber" />
         </el-form-item>
@@ -42,15 +37,7 @@
           <el-input v-model="formData.companyAddress" />
         </el-form-item>
 
-        <el-form-item label="法人代表:">
-          <el-input v-model="formData.legalRepresentative" placeholder="默认不填写" />
-        </el-form-item>
-
-        <el-form-item label="授权代理人:">
-          <el-input v-model="formData.authorizedAgent" placeholder="默认不填写" />
-        </el-form-item>
-
-        <el-form-item label="纳税识别号:" prop="taxId">
+        <el-form-item label="纳税人识别号:" prop="taxId">
           <el-input v-model="formData.taxId" />
         </el-form-item>
 
@@ -62,13 +49,20 @@
           <el-input v-model="formData.bankAccount" />
         </el-form-item>
 
-        <el-form-item label="运输方式:" prop="deliveryMethod">
+        <el-form-item label="运输方式:">
           <el-select v-model="formData.deliveryMethod" placeholder="请选择运输方式" style="width: 100%;">
             <el-option label="双方协商" value="双方协商" />
             <el-option label="由甲方到乙方仓库自提货" value="由甲方到乙方仓库自提货" />
           </el-select>
         </el-form-item>
 
+        <el-form-item label="法人代表:">
+          <el-input v-model="formData.legalRepresentative" placeholder="默认不填写" />
+        </el-form-item>
+
+        <el-form-item label="授权代理人:">
+          <el-input v-model="formData.authorizedAgent" placeholder="默认不填写" />
+        </el-form-item>
 
         <el-form-item class="submit-container">
           <el-button type="primary" class="submit-button" @click="submitForm">提交</el-button>
@@ -87,23 +81,22 @@ import { suggestCompanies, createCompany, updateCompany } from '@/api/company'
 const formData = reactive({
   contractNumber: '',
   signingDate: '',
-  companyName: '',
   productTonnage: '',
   unitPrice: '',
   specialPrice: '',
+  companyName: '',
   phoneNumber: '',
   companyAddress: '',
-  legalRepresentative: '',
-  authorizedAgent: '',
   taxId: '',
   bankAddress: '',
   bankAccount: '',
   deliveryMethod: '双方协商',
+  legalRepresentative: '',
+  authorizedAgent: '',
 })
 
 const formRef = ref(null)
-
-const selectedCompanyId = ref(null) // 选中的公司ID
+const selectedCompanyId = ref(null)
 
 // 验证规则
 const rules = reactive({
@@ -114,9 +107,6 @@ const rules = reactive({
   signingDate: [
     { required: true, message: '请输入签订日期', trigger: 'blur' },
   ],
-  companyName: [
-    { required: true, message: '请输入公司名称', trigger: 'blur' }
-  ],
   productTonnage: [
     { required: true, message: '请输入商品吨位', trigger: 'blur' },
     { pattern: /^[0-9]+(\.[0-9]+)?$/, message: '商品吨位必须是数字(整数或小数)', trigger: 'blur' }
@@ -125,19 +115,28 @@ const rules = reactive({
     { required: true, message: '请输入商品单价', trigger: 'blur' },
     { pattern: /^[0-9]+$/, message: '商品单价必须是整数', trigger: 'blur' }
   ],
+  companyName: [
+    { required: true, message: '请输入公司名称', trigger: 'blur' }
+  ],
   taxId: [
-    { required: true, message: '请输入纳税识别号', trigger: 'blur' }
+    { required: true, message: '请输入纳税人识别号', trigger: 'blur' }
   ],
   bankAddress: [
-    { required: true, message: '请输入开户地址', trigger: 'blur' }
+    { required: true, message: '请输入开户行地址', trigger: 'blur' }
   ],
   bankAccount: [
     { required: true, message: '请输入银行账号', trigger: 'blur' }
   ],
-  deliveryMethod: [
-    { required: true, message: '请选择运输方式', trigger: 'change' }
-  ],
 })
+
+// 清洗输入数据（去除所有字符串的前后空格）
+const trimFormData = () => {
+  for (const key in formData) {
+    if (typeof formData[key] === 'string') {
+      formData[key] = formData[key].trim()
+    }
+  }
+}
 
 const fetchSuggestions = async (queryString, cb) => {
   if (!queryString.trim()) {
@@ -154,54 +153,49 @@ const fetchSuggestions = async (queryString, cb) => {
   }
 }
 
-// 用户选择了建议
+// 选择建议公司时自动填充
 const handleSelectCompany = (company) => {
   formData.companyName = company.name
   formData.phoneNumber = company.phone || ''
   formData.companyAddress = company.address || ''
-  formData.legalRepresentative = company.legal_person || ''
-  formData.authorizedAgent = company.agent || ''
   formData.taxId = company.tax_id || ''
   formData.bankAddress = company.bank_address || ''
   formData.bankAccount = company.bank_account || ''
+  formData.legalRepresentative = company.legal_person || ''
+  formData.authorizedAgent = company.agent || ''
   selectedCompanyId.value = company.id || null
 }
 
-// 提交表单
+// 表单提交逻辑
 const submitForm = async () => {
-  if (!formRef.value) return;
+  if (!formRef.value) return
 
   await formRef.value.validate(async (valid) => {
     if (!valid) {
-      ElMessage.error('请完善必填信息后再提交！');
-      return;
+      ElMessage.error('请完善必填信息后再提交！')
+      return
+    }
+
+    // 去除空格
+    trimFormData()
+
+    // 准备请求体（避免重复构造）
+    const companyPayload = {
+      name: formData.companyName,
+      phone: formData.phoneNumber,
+      address: formData.companyAddress,
+      tax_id: formData.taxId,
+      bank_address: formData.bankAddress,
+      bank_account: formData.bankAccount,
+      legal_person: formData.legalRepresentative,
+      agent: formData.authorizedAgent
     }
 
     try {
       if (selectedCompanyId.value) {
-        // 更新公司信息
-        await updateCompany(selectedCompanyId.value, {
-          name: formData.companyName,
-          phone: formData.phoneNumber,
-          address: formData.companyAddress,
-          legal_person: formData.legalRepresentative,
-          agent: formData.authorizedAgent,
-          tax_id: formData.taxId,
-          bank_address: formData.bankAddress,
-          bank_account: formData.bankAccount
-        })
+        await updateCompany(selectedCompanyId.value, companyPayload)
       } else {
-        // 新建公司
-        await createCompany({
-          name: formData.companyName,
-          phone: formData.phoneNumber,
-          address: formData.companyAddress,
-          legal_person: formData.legalRepresentative,
-          agent: formData.authorizedAgent,
-          tax_id: formData.taxId,
-          bank_address: formData.bankAddress,
-          bank_account: formData.bankAccount
-        })
+        await createCompany(companyPayload)
       }
 
       const res = await generateContract(formData)
@@ -218,8 +212,8 @@ const submitForm = async () => {
     }
   })
 }
-
 </script>
+
 
 
 

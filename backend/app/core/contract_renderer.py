@@ -11,19 +11,17 @@ class ContractRenderer:
         self.contract_number = f"YD{data[0]}"
         self.tpl = DocxTemplate(str(TEMPLATE_PATH))
 
-        ton = float(data[3])
-        price_per_ton = float(data[4])
-        discount = float(data[5]) if data[5] else 0
+        ton = float(data[2])
+        price_per_ton = float(data[3])
+        discount = float(data[4]) if data[4] else 0
         base_amount = ton * price_per_ton
         final_amount = base_amount - discount
 
         self.context: Dict[str, str] = {
             "contract_number": self.contract_number,
             "date": data[1],
-            "company_name": data[2],
-
-            "ton": str(data[3]),
-            "price": str(data[4]),
+            "ton": str(data[2]),
+            "price": str(data[3]),
             "money": self.format_number(base_amount),
             "sub": self.format_number(discount) if discount != 0 else '',
             "all": self.format_number(final_amount),
@@ -31,17 +29,17 @@ class ContractRenderer:
 
             "special": '优惠' if discount > 0 else '',
 
+            "company_name": data[5],
             "tel": data[6],
             "address": self.ensure_line_break(data[7]),
+            "identification_number": data[8],
+            "opening_bank": data[9],
+            "account": data[10],
 
-            "represent": data[8],
-            "agent": data[9],
+            "pattern": data[11],
 
-            "identification_number": data[10],
-            "opening_bank": data[11],
-            "account": data[12],
-
-            "pattern": data[13]
+            "represent": data[12],
+            "agent": data[13],
         }
 
     def format_number(self, money: int | float) -> str:
