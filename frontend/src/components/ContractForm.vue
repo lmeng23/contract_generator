@@ -1,74 +1,72 @@
 <template>
   <div class="contract-form-container">
-    <el-card class="form-card">
-      <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px" class="contract-form">
-        <el-form-item label="合同编号:" prop="contractNumber">
-          <el-input v-model="formData.contractNumber" />
-        </el-form-item>
+    <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px" class="contract-form">
+      <el-form-item label="合同编号:" prop="contractNumber">
+        <el-input v-model="formData.contractNumber" />
+      </el-form-item>
 
-        <el-form-item label="签订日期:" prop="signingDate">
-          <el-date-picker v-model="formData.signingDate" type="date" placeholder="选择日期" format="YYYY-MM-DD"
-            value-format="YYYY-MM-DD" style="width: 100%;" />
-        </el-form-item>
+      <el-form-item label="签订日期:" prop="signingDate">
+        <el-date-picker v-model="formData.signingDate" type="date" placeholder="选择日期" format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD" style="width: 100%;" />
+      </el-form-item>
 
-        <el-form-item label="商品吨位:" prop="productTonnage">
-          <el-input v-model="formData.productTonnage" />
-        </el-form-item>
+      <el-form-item label="商品吨位:" prop="productTonnage">
+        <el-input v-model="formData.productTonnage" />
+      </el-form-item>
 
-        <el-form-item label="商品单价:" prop="unitPrice">
-          <el-input v-model="formData.unitPrice" />
-        </el-form-item>
+      <el-form-item label="商品单价:" prop="unitPrice">
+        <el-input v-model="formData.unitPrice" />
+      </el-form-item>
 
-        <el-form-item label="优惠价格:">
-          <el-input v-model="formData.specialPrice" placeholder="不优惠留空" />
-        </el-form-item>
+      <el-form-item label="优惠价格:">
+        <el-input v-model="formData.specialPrice" placeholder="不优惠留空" />
+      </el-form-item>
 
-        <el-form-item label="公司名称:" prop="companyName">
-          <el-autocomplete v-model="formData.companyName" :fetch-suggestions="fetchSuggestions"
-            placeholder="输入公司名称，自动补全相关信息 " :trigger-on-focus="false" @select="handleSelectCompany" value-key="name"
-            clearable />
-        </el-form-item>
+      <el-form-item label="公司名称:" prop="companyName">
+        <el-autocomplete v-model="formData.companyName" :fetch-suggestions="fetchSuggestions"
+          placeholder="输入公司名称，自动补全相关信息 " :trigger-on-focus="false" @select="handleSelectCompany" value-key="name"
+          clearable />
+      </el-form-item>
 
-        <el-form-item label="电话号码:" prop="phoneNumber">
-          <el-input v-model="formData.phoneNumber" />
-        </el-form-item>
+      <el-form-item label="电话号码:" prop="phoneNumber">
+        <el-input v-model="formData.phoneNumber" />
+      </el-form-item>
 
-        <el-form-item label="公司地址:" prop="companyAddress">
-          <el-input v-model="formData.companyAddress" />
-        </el-form-item>
+      <el-form-item label="公司地址:" prop="companyAddress">
+        <el-input v-model="formData.companyAddress" />
+      </el-form-item>
 
-        <el-form-item label="纳税人识别号:" prop="taxId">
-          <el-input v-model="formData.taxId" />
-        </el-form-item>
+      <el-form-item label="纳税人识别号:" prop="taxId">
+        <el-input v-model="formData.taxId" />
+      </el-form-item>
 
-        <el-form-item label="开户行地址:" prop="bankAddress">
-          <el-input v-model="formData.bankAddress" />
-        </el-form-item>
+      <el-form-item label="开户行地址:" prop="bankAddress">
+        <el-input v-model="formData.bankAddress" />
+      </el-form-item>
 
-        <el-form-item label="银行账号:" prop="bankAccount">
-          <el-input v-model="formData.bankAccount" />
-        </el-form-item>
+      <el-form-item label="银行账号:" prop="bankAccount">
+        <el-input v-model="formData.bankAccount" />
+      </el-form-item>
 
-        <el-form-item label="运输方式:">
-          <el-select v-model="formData.deliveryMethod" placeholder="请选择运输方式" style="width: 100%;">
-            <el-option label="双方协商" value="双方协商" />
-            <el-option label="由甲方到乙方仓库自提货" value="由甲方到乙方仓库自提货" />
-          </el-select>
-        </el-form-item>
+      <el-form-item label="运输方式:">
+        <el-select v-model="formData.deliveryMethod" placeholder="请选择运输方式" style="width: 100%;">
+          <el-option label="双方协商" value="双方协商" />
+          <el-option label="由甲方到乙方仓库自提货" value="由甲方到乙方仓库自提货" />
+        </el-select>
+      </el-form-item>
 
-        <el-form-item label="法人代表:">
-          <el-input v-model="formData.legalRepresentative" placeholder="默认不填写" />
-        </el-form-item>
+      <el-form-item label="法人代表:">
+        <el-input v-model="formData.legalRepresentative" placeholder="默认不填写" />
+      </el-form-item>
 
-        <el-form-item label="授权代理人:">
-          <el-input v-model="formData.authorizedAgent" placeholder="默认不填写" />
-        </el-form-item>
+      <el-form-item label="授权代理人:">
+        <el-input v-model="formData.authorizedAgent" placeholder="默认不填写" />
+      </el-form-item>
 
-        <el-form-item class="submit-container">
-          <el-button type="primary" class="submit-button" @click="submitForm">提交</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
+      <el-form-item class="submit-container">
+        <el-button type="primary" class="submit-button" @click="submitForm">提交</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -218,41 +216,19 @@ const submitForm = async () => {
 .contract-form-container {
   display: flex;
   justify-content: center;
-  min-height: 100vh;
-  min-height: calc(var(--vh, 1vh) * 100);
-  width: 100%;
+  align-items: flex-start;
+  height: 100vh;
+  width: 100vw;
   margin: 0;
   padding: 0;
+  overflow-y: auto;
   box-sizing: border-box;
 }
 
-.form-card {
-  width: 100%;
-  max-width: 1400px;
-  /* 原1200，已加大 */
-  height: 100vh;
-  height: calc(var(--vh, 1vh) * 100);
-  margin: 0;
-  border-radius: 0;
-  overflow-y: auto;
-}
-
-.card-header {
-  text-align: center;
-  margin: 20px 0;
-}
-
-.card-header h2 {
-  font-size: 24px;
-  margin: 0;
-  padding: 0;
-}
-
 .contract-form {
-  padding: 20px;
-  max-width: 1000px;
-  /* 原800，已加大 */
-  margin: 0 auto;
+  width: 100%;
+  padding: 40px 60px;
+  box-sizing: border-box;
 }
 
 :deep(.el-form-item__content) {
@@ -267,13 +243,12 @@ const submitForm = async () => {
 
 :deep(.el-form-item__label) {
   flex: 0 0 130px;
-  /* 原120px，已加大 */
   text-align: right;
   font-weight: bold;
   white-space: nowrap;
-  /* 防止换行 */
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-right: 12px;
 }
 
 :deep(.el-form-item__content) {
@@ -290,72 +265,73 @@ const submitForm = async () => {
 .submit-button {
   width: 100%;
   max-width: 600px;
-  /* 原500，已加大 */
   font-size: 20px;
   height: 50px;
   padding: 10px 20px;
 }
 
+/* 平板设备 */
 @media (max-width: 768px) {
-  .form-card {
-    height: 100%;
-    min-height: 100vh;
-    min-height: calc(var(--vh, 1vh) * 100);
-  }
-
   .contract-form {
-    padding: 10px;
-  }
-
-  .card-header h2 {
-    font-size: 20px;
-  }
-
-  :deep(.el-form-item) {
-    flex-direction: row;
-    margin-bottom: 25px;
+    padding: 20px;
   }
 
   :deep(.el-form-item__label) {
-    flex: 0 0 110px;
-    /* 原100，已加大 */
-    padding-right: 10px;
+    flex: 0 0 120px;
     font-size: 14px;
-    white-space: nowrap;
+    margin-right: 10px;
   }
 
   .submit-button {
     font-size: 18px;
     height: 45px;
-    max-width: 600px;
-    /* 保持一致 */
   }
 }
 
+/* 手机设备 */
 @media (max-width: 480px) {
-  .card-header {
-    margin: 10px 0;
-  }
-
   .contract-form {
-    padding: 5px 10px;
+    padding: 15px 10px;
   }
 
   :deep(.el-form-item) {
+    display: flex;
+    align-items: center;
     margin-bottom: 20px;
   }
 
   :deep(.el-form-item__label) {
-    flex: 0 0 100px;
-    /* 原90，已加大 */
+    flex: 0 0 auto;
+    min-width: 80px;
+    max-width: 35%;
+    text-align: right;
+    margin-right: 8px;
     font-size: 13px;
+    font-weight: bold;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  :deep(.el-form-item__content) {
+    flex: 1;
+    min-width: 0;
   }
 
   .submit-button {
     font-size: 16px;
     height: 40px;
-    max-width: 600px;
+  }
+}
+
+/* 超小屏幕设备 */
+@media (max-width: 375px) {
+  .contract-form {
+    padding: 10px 8px;
+  }
+
+  :deep(.el-form-item__label) {
+    font-size: 13px;
   }
 }
 
@@ -366,19 +342,16 @@ const submitForm = async () => {
   padding-bottom: 10px;
 }
 
-@media (max-width: 768px) {
-  :deep(.el-input__inner) {
-    height: 38px !important;
-    padding-top: 8px;
-    padding-bottom: 8px;
-  }
+/* 确保输入框在所有设备上都能完整显示 */
+:deep(.el-input),
+:deep(.el-select),
+:deep(.el-date-editor) {
+  width: 100%;
+  max-width: 100%;
 }
 
-@media (max-width: 480px) {
-  :deep(.el-input__inner) {
-    height: 38px !important;
-    padding-top: 7px;
-    padding-bottom: 7px;
-  }
+/* 自动完成组件的特殊处理 */
+:deep(.el-autocomplete) {
+  width: 100%;
 }
 </style>
