@@ -133,7 +133,7 @@ const rules = reactive({
 const trimFormData = () => {
   for (const key in formData) {
     if (typeof formData[key] === 'string') {
-      formData[key] = formData[key].trim()
+      formData[key] = formData[key].replace(/\s+/g, '');
     }
   }
 }
@@ -214,17 +214,12 @@ const submitForm = async () => {
 }
 </script>
 
-
-
-
 <style scoped>
 .contract-form-container {
   display: flex;
   justify-content: center;
   min-height: 100vh;
-  /* 设置最小高度为视口高度 */
   min-height: calc(var(--vh, 1vh) * 100);
-  /* 移动端兼容 */
   width: 100%;
   margin: 0;
   padding: 0;
@@ -233,7 +228,8 @@ const submitForm = async () => {
 
 .form-card {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
+  /* 原1200，已加大 */
   height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
   margin: 0;
@@ -254,11 +250,11 @@ const submitForm = async () => {
 
 .contract-form {
   padding: 20px;
-  max-width: 800px;
+  max-width: 1000px;
+  /* 原800，已加大 */
   margin: 0 auto;
 }
 
-/* 让label和input在同一行 */
 :deep(.el-form-item__content) {
   margin-left: 0 !important;
 }
@@ -266,17 +262,23 @@ const submitForm = async () => {
 :deep(.el-form-item) {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 :deep(.el-form-item__label) {
-  flex: 0 0 120px;
+  flex: 0 0 130px;
+  /* 原120px，已加大 */
   text-align: right;
   font-weight: bold;
+  white-space: nowrap;
+  /* 防止换行 */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 :deep(.el-form-item__content) {
   flex: 1;
+  min-width: 0;
 }
 
 .submit-container {
@@ -287,13 +289,13 @@ const submitForm = async () => {
 
 .submit-button {
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
+  /* 原500，已加大 */
   font-size: 20px;
   height: 50px;
   padding: 10px 20px;
 }
 
-/* 响应式设计 */
 @media (max-width: 768px) {
   .form-card {
     height: 100%;
@@ -311,18 +313,22 @@ const submitForm = async () => {
 
   :deep(.el-form-item) {
     flex-direction: row;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
   }
 
   :deep(.el-form-item__label) {
-    flex: 0 0 100px;
+    flex: 0 0 110px;
+    /* 原100，已加大 */
     padding-right: 10px;
     font-size: 14px;
+    white-space: nowrap;
   }
 
   .submit-button {
     font-size: 18px;
     height: 45px;
+    max-width: 600px;
+    /* 保持一致 */
   }
 }
 
@@ -336,101 +342,43 @@ const submitForm = async () => {
   }
 
   :deep(.el-form-item) {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
 
   :deep(.el-form-item__label) {
-    flex: 0 0 90px;
+    flex: 0 0 100px;
+    /* 原90，已加大 */
     font-size: 13px;
+    white-space: nowrap;
   }
 
   .submit-button {
     font-size: 16px;
     height: 40px;
+    max-width: 600px;
   }
 }
 
-/* 增加表单项的上下间距 */
-:deep(.el-form-item) {
-  display: flex;
-  align-items: center;
-  margin-bottom: 30px;
-  /* 增加底部间距，原来是 20px */
-}
-
-/* 增加输入框的高度和内部上下间距 */
 :deep(.el-input__inner) {
-  height: 45px;
-  /* 增加输入框高度，默认是 32px */
+  height: 38px !important;
+  line-height: 38px;
   padding-top: 10px;
   padding-bottom: 10px;
-  line-height: 25px;
 }
 
-/* 媒体查询中也要相应调整 */
 @media (max-width: 768px) {
-  :deep(.el-form-item) {
-    flex-direction: row;
-    margin-bottom: 25px;
-    /* 中等屏幕的间距略小 */
-  }
-
   :deep(.el-input__inner) {
-    height: 40px;
+    height: 38px !important;
     padding-top: 8px;
     padding-bottom: 8px;
   }
 }
 
 @media (max-width: 480px) {
-  :deep(.el-form-item) {
-    margin-bottom: 20px;
-    /* 小屏幕再略小些 */
-  }
-
   :deep(.el-input__inner) {
-    height: 38px;
+    height: 38px !important;
     padding-top: 7px;
     padding-bottom: 7px;
-  }
-}
-
-/* 增加表单项的上下间距 */
-:deep(.el-form-item) {
-  display: flex;
-  align-items: center;
-  margin-bottom: 25px;
-  /* 适当的表单项间距 */
-}
-
-/* 设置输入框高度为38px */
-:deep(.el-input__inner) {
-  height: 38px !important;
-  /* 强制所有输入框高度为38px */
-  line-height: 38px;
-}
-
-/* 响应式设计中保持输入框高度一致 */
-@media (max-width: 768px) {
-  :deep(.el-form-item) {
-    flex-direction: row;
-    margin-bottom: 20px;
-  }
-
-  :deep(.el-input__inner) {
-    height: 38px !important;
-    /* 中等屏幕保持相同高度 */
-  }
-}
-
-@media (max-width: 480px) {
-  :deep(.el-form-item) {
-    margin-bottom: 15px;
-  }
-
-  :deep(.el-input__inner) {
-    height: 38px !important;
-    /* 小屏幕也保持相同高度 */
   }
 }
 </style>
