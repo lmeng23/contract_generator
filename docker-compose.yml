@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  contract-backend:
+    image: contract-backend
+    container_name: backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./backend/output:/app/output
+    restart: always
+
+  contract-frontend:
+    image: contract-frontend:latest
+    container_name: frontend
+    ports:
+      - "1234:80"
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html
+    restart: always

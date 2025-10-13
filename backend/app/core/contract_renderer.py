@@ -11,19 +11,17 @@ class ContractRenderer:
         self.contract_number = f"YD{data[0]}"
         self.tpl = DocxTemplate(str(TEMPLATE_PATH))
 
-        ton = float(data[3])
-        price_per_ton = float(data[4])
-        discount = float(data[5]) if data[5] else 0
+        ton = float(data[2])
+        price_per_ton = float(data[3])
+        discount = float(data[4]) if data[4] else 0
         base_amount = ton * price_per_ton
         final_amount = base_amount - discount
 
         self.context: Dict[str, str] = {
             "contract_number": self.contract_number,
             "date": data[1],
-            "company_name": data[2],
-
-            "ton": str(data[3]),
-            "price": str(data[4]),
+            "ton": str(data[2]),
+            "price": str(data[3]),
             "money": self.format_number(base_amount),
             "sub": self.format_number(discount) if discount != 0 else '',
             "all": self.format_number(final_amount),
@@ -31,15 +29,17 @@ class ContractRenderer:
 
             "special": '优惠' if discount > 0 else '',
 
+            "company_name": data[5],
             "tel": data[6],
             "address": self.ensure_line_break(data[7]),
+            "identification_number": data[8],
+            "opening_bank": data[9],
+            "account": data[10],
 
-            "represent": data[8],
-            "agent": data[9],
+            "pattern": data[11],
 
-            "identification_number": data[10],
-            "opening_bank": data[11],
-            "account": data[12],
+            "represent": data[12],
+            "agent": data[13],
         }
 
     def format_number(self, money: int | float) -> str:
@@ -56,56 +56,65 @@ class ContractRenderer:
         num_map = {"0": "零", "1": "壹", "2": "贰", "3": "叁",
                    "4": "肆", "5": "伍", "6": "陆", "7": "柒",
                    "8": "捌", "9": "玖"}
-        unit_int = ["元", "拾", "佰", "仟", "万", "拾", "佰", "仟",
-                    "亿", "拾", "佰", "仟", "兆", "拾", "佰", "仟"]
-        unit_dec = ["角", "分"]
+        unit_map = ["", "拾", "佰", "仟"]
+        section_unit = ["", "万", "亿", "兆"]
+        dec_unit = ["角", "分"]
 
-        # 将输入转换为 Decimal 并保留两位小数
+        def four_digit_to_chinese(four_digits: str) -> str:
+            result = []
+            zero_flag = False
+            for i in range(4):
+                num = four_digits[i]
+                unit = unit_map[3 - i]
+                if num != "0":
+                    if zero_flag:
+                        result.append("零")
+                        zero_flag = False
+                    result.append(num_map[num] + unit)
+                else:
+                    zero_flag = True
+            return "".join(result).rstrip("零")
+
         d = Decimal(str(amount)).quantize(
             Decimal("0.00"), rounding=ROUND_HALF_UP)
         s = f"{d:.2f}"
         int_part, dec_part = s.split(".")
 
-        result = []
-
-        # 处理整数部分
-        int_len = len(int_part)
-        for i, ch in enumerate(int_part):
-            num = num_map[ch]
-            unit = unit_int[int_len - i - 1]
-            # 只在数字不为“0”时添加对应单位；遇到“0”时，若前一位不是“零”则添加“零”
-            if ch != "0":
-                result.append(num + unit)
-            else:
-                if result and result[-1] != "零":
-                    result.append("零")
-
-        # 去掉末尾多余的“零”
-        if result and result[-1] == "零":
-            result.pop()
-        # 如果整个整数部分都是 0，补“零元”
-        if not result:
-            result.append("零元")
+        # 整数部分处理
+        if int_part == "0":
+            int_result = "零元"
         else:
-            # 如果最后一位不是“元”，补上“元”
-            if not result[-1].endswith("元"):
-                result.append("元")
+            int_result = ""
+            int_part = int_part.zfill(((len(int_part) + 3) // 4) * 4)
+            sections = [int_part[i:i+4] for i in range(0, len(int_part), 4)]
+            result_parts = []
+            zero_flag = False
+            for idx, sec in enumerate(sections):
+                part = four_digit_to_chinese(sec)
+                if part:
+                    if zero_flag:
+                        result_parts.append("零")
+                        zero_flag = False
+                    result_parts.append(
+                        part + section_unit[len(sections) - idx - 1])
+                else:
+                    zero_flag = True
+            int_result = "".join(result_parts).lstrip("零") + "元"
 
-        # 处理小数部分
+        # 小数部分处理
         jiao, fen = dec_part[0], dec_part[1]
         if jiao == fen == "0":
-            result.append("整")
+            dec_result = "整"
         else:
+            dec_result = ""
             if jiao != "0":
-                result.append(num_map[jiao] + unit_dec[0])
-            else:
-                # 如果“角”为0而“分”不为0，需要补“零”
-                if fen != "0":
-                    result.append("零")
+                dec_result += num_map[jiao] + dec_unit[0]
             if fen != "0":
-                result.append(num_map[fen] + unit_dec[1])
+                if jiao == "0":
+                    dec_result += "零"
+                dec_result += num_map[fen] + dec_unit[1]
 
-        return "".join(result)
+        return int_result + dec_result
 
     def save_docx(self) -> str:
         """渲染并保存 .docx 文件"""
