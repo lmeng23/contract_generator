@@ -48,14 +48,7 @@ class ContractRenderer:
 
     def ensure_line_break(self, address: str) -> str:
         """地址不足一行时添加换行保持对齐，纯汉字且长度=23不换行"""
-        is_pure_chinese = all('\u4e00' <= ch <= '\u9fff' for ch in address)
-
-        # 如果长度 <= 23 且不是纯汉字长度23的情况，则添加换行
-        if len(address) <= 23 and not (is_pure_chinese and len(address) == 23):
-            return f"{address}\n"
-
-        return address
-
+        return f"{address}\n" if len(address) <= 23 else address
 
     def digital_to_chinese(self, amount: str) -> str:
         """将数字金额转换为中文大写（人民币格式）"""
