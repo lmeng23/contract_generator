@@ -46,9 +46,28 @@ class ContractRenderer:
         """格式化金额为两位小数的字符串"""
         return f"{float(money):.2f}"
 
+    def get_display_width(self, text: str) -> float:
+        """计算字符串的视觉显示宽度。
+
+        以汉字为基准单位(=1.0)，ASCII半角字符(数字/字母/括号等)=0.4。
+        经验值来源：纯汉字20字、含半角字符的等宽边界字符串反推。
+        """
+        width = 0
+        for ch in text:
+            if ord(ch) > 127:
+                width += 1    # 全角字符（汉字等）
+            else:
+                width += 0.4  # 半角字符（数字、括号、字母等）
+        return width
+
     def ensure_line_break(self, address: str) -> str:
-        """地址不足一行时添加换行保持对齐，纯汉字且长度=23不换行"""
-        return f"{address}\n" if len(address) <= 23 else address
+        """地址不足一行时追加换行符以保持分栏对齐。
+
+        阈值20.0对应分栏单行容量，超过则依赖Word自动换行，无需手动添加。
+        """
+        if self.get_display_width(address) <= 20.0:
+            return f"{address}\n"
+        return address
 
     def digital_to_chinese(self, amount: str) -> str:
         """将数字金额转换为中文大写（人民币格式）"""
