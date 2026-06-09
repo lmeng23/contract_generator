@@ -3,13 +3,15 @@ import subprocess
 from typing import Dict, List
 from docxtpl import DocxTemplate
 
-from app.config import OUTPUT_DOCX_DIR, OUTPUT_PDF_DIR, TEMPLATE_PATH
+from app.config import OUTPUT_DOCX_DIR, OUTPUT_PDF_DIR, TEMPLATE_PATH, TEMPLATE2_PATH
 
 
 class ContractRenderer:
     def __init__(self, data: List[str]) -> None:
         self.contract_number = f"YD{data[0]}"
-        self.tpl = DocxTemplate(str(TEMPLATE_PATH))
+
+        template_path = TEMPLATE2_PATH if self.is_pure_chinese(data[7]) else TEMPLATE_PATH
+        self.tpl = DocxTemplate(str(template_path))
 
         ton = float(data[2])
         price_per_ton = float(data[3])
@@ -59,6 +61,10 @@ class ContractRenderer:
             else:
                 width += 0.4  # 半角字符（数字、括号、字母等）
         return width
+
+    def is_pure_chinese(self,text: str) -> bool:
+        """判断字符串是否全部由汉字组成。"""
+        return all('\u4e00' <= ch <= '\u9fff' for ch in text)
 
     def ensure_line_break(self, address: str) -> str:
         """地址不足一行时追加换行符以保持分栏对齐。
