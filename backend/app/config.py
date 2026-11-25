@@ -2,10 +2,10 @@ from pathlib import Path
 from pydantic_settings import BaseSettings
 
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE_PATH = BASE_DIR / "app" / "templates" / "template.docx"
 TEMPLATE2_PATH = BASE_DIR / "app" / "templates" / "template2.docx"
+TEMPLATE3_PATH = BASE_DIR / "app" / "templates" / "template3.docx"
 
 OUTPUT_DIR = BASE_DIR / "output"
 OUTPUT_DIR.mkdir(exist_ok=True)

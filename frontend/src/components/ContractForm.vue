@@ -1,6 +1,13 @@
 <template>
   <div class="contract-form-container">
     <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px" class="contract-form">
+      <el-form-item label="合同模板:" prop="templateType">
+        <el-select v-model="formData.templateType" placeholder="请选择合同模板" @change="handleTemplateTypeChange">
+          <el-option label="供货方" value="supplier" />
+          <el-option label="购货方" value="buyer" />
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="合同编号:" prop="contractNumber">
         <el-input v-model="formData.contractNumber" />
       </el-form-item>
@@ -49,10 +56,11 @@
       </el-form-item>
 
       <el-form-item label="运输方式:">
-        <el-select v-model="formData.deliveryMethod" placeholder="请选择运输方式" style="width: 100%;" clearable filterable allow-create>
-          <el-option label="双方协商" value="双方协商" />
+        <el-select v-model="formData.deliveryMethod" placeholder="请选择运输方式" style="width: 100%;" filterable
+          :clearable="formData.templateType === 'buyer'" :allow-create="formData.templateType === 'buyer'">
+          <el-option v-if="formData.templateType === 'buyer'" label="双方协商" value="双方协商" />
           <el-option label="由甲方到乙方仓库自提货" value="由甲方到乙方仓库自提货" />
-          <el-option label="乙方送到" value="乙方送到" />
+          <el-option v-if="formData.templateType === 'buyer'" label="乙方送到" value="乙方送到" />
         </el-select>
       </el-form-item>
 
@@ -78,6 +86,7 @@ import { generateContract } from '@/api/contract'
 import { suggestCompanies, createCompany, updateCompany } from '@/api/company'
 
 const formData = reactive({
+  templateType: 'supplier',
   contractNumber: '',
   signingDate: '',
   productTonnage: '',
@@ -89,7 +98,7 @@ const formData = reactive({
   taxId: '',
   bankAddress: '',
   bankAccount: '',
-  deliveryMethod: '双方协商',
+  deliveryMethod: '由甲方到乙方仓库自提货',
   legalRepresentative: '',
   authorizedAgent: '',
 })
@@ -97,8 +106,19 @@ const formData = reactive({
 const formRef = ref(null)
 const selectedCompanyId = ref(null)
 
+const handleTemplateTypeChange = (templateType) => {
+  if (templateType === 'supplier') {
+    formData.deliveryMethod = '由甲方到乙方仓库自提货'
+  } else {
+    formData.deliveryMethod = '甲方自提'
+  }
+}
+
 // 验证规则
 const rules = reactive({
+  templateType: [
+    { required: true, message: '请选择合同模板', trigger: 'change' }
+  ],
   contractNumber: [
     { required: true, message: '请输入合同编号', trigger: 'blur' },
     { pattern: /^\d+$/, message: '合同编号必须是数字', trigger: 'blur' }

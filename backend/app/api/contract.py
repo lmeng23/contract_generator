@@ -8,7 +8,10 @@ router = APIRouter()
 @router.post("/generate")
 def generate_contract(request: ContractData):
     try:
-        renderer = ContractRenderer(list(request.model_dump().values()))
+        renderer = ContractRenderer(
+            list(request.model_dump(exclude={"templateType"}).values()),
+            request.templateType,
+        )
         filename = renderer.save_docx()
         renderer.convert_to_pdf(filename)
         return {"status": "success",

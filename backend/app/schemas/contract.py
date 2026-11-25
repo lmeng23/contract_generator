@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel
 
 
@@ -16,3 +18,4 @@ class ContractData(BaseModel):
     deliveryMethod: str
     legalRepresentative: str
     authorizedAgent: str
+    templateType: Literal["supplier", "buyer"] = "supplier"
